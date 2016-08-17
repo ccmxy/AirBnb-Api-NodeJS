@@ -1,0 +1,210 @@
+@import url(//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css);
+.detailBox {
+    width: 500px;
+    border: 1px solid #bbb;
+    margin: 50px;
+    margin: 60px auto;
+    margin-top: 0;
+    background: #f4f4f4;
+}
+.container {
+    padding: 0 20px 20px 20px;
+    background: #f4f4f4;
+    border: #ccc solid 1px;
+    border-radius: 5px;
+    width: 500px;
+    margin: 60px auto;
+    overflow: auto;
+    margin-bottom: 1em;
+}
+.big-container {
+    padding: 0 20px 20px 20px;
+    background: #f4f4f4;
+    border: #ccc solid 1px;
+    border-radius: 5px;
+    width: 800px;
+    margin: 60px auto;
+    overflow: auto;
+    margin-bottom: 1em;
+}
+.titleBox {
+    background-color: #fdfdfd;
+    padding: 10px;
+}
+.titleBox label {
+    color: #444;
+    margin: 0;
+    display: inline-block;
+}
+.commentBox {
+    padding: 10px;
+    border-top: 1px dotted #bbb;
+}
+.commentBox .form-group:first-child,
+.actionBox .form-group:first-child {
+    width: 80%;
+}
+.commentBox .form-group:nth-child(2),
+.actionBox .form-group:nth-child(2) {
+    width: 18%;
+}
+.actionBox .form-group * {
+    width: 100%;
+}
+.taskDescription {
+    margin-top: 10px 0;
+}
+.commentList {
+    padding: 0;
+    list-style: none;
+    max-height: 200px;
+    overflow: auto;
+}
+.commentList li {
+    margin: 0;
+    margin-top: 10px;
+}
+.commentList li > div {
+    display: table-cell;
+}
+.commenterImage {
+    width: 30px;
+    margin-right: 5px;
+    height: 100%;
+    float: left;
+}
+.commenterImage img {
+    width: 100%;
+    border-radius: 50%;
+}
+.commentText p {
+    margin: 0;
+}
+.sub-text {
+    color: #aaa;
+    font-family: verdana;
+    font-size: 11px;
+}
+.actionBox {
+    border-top: 1px dotted #bbb;
+    padding: 10px;
+}
+@import url(https://fonts.googleapis.com/css?family=Play|Karla);
+.element-demo {
+    height: 100px;
+    margin: 0.5em 0;
+    padding: 1em;
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
+    text-shadow: 0 -0.1em 0.2em black;
+    border: 0.3em solid #545454;
+    border-radius: 0.5em;
+    background: none repeat scroll 0 0 #141414;
+    box-shadow: 1px 1px 0.5em black inset;
+    overflow: auto
+}
+body {
+    font-family: arial;
+    background: #333;
+}
+.clr {
+    clear: both;
+}
+a {
+    color: #00B7FF;
+}
+.regform label {
+    display: block;
+    margin: 12px 0 8px 0;
+}
+.regform input[type="text"],
+.regform input[type="password"],
+.regform input[type="email"] {
+    width: 97%;
+    padding: 5px;
+    height: 24px;
+    border: #ccc 1px solid;
+    border-radius: 5px;
+}
+.regform input[type="submit"] {
+    margin-top: 15px;
+    width: 80px;
+    background: #333;
+    color: #fff;
+    height: 30px;
+    border: 0;
+}
+.userlist {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+.userlist li {
+    border-bottom: #ccc dotted 1px;
+    list-style-type: none;
+    padding: 4px 0;
+}
+p {
+    color: black;
+}
+h4 {
+    color: red;
+}
+.api-button {
+    display: inline-block;
+    background-color: #1984c3;
+    color: #fff;
+    font-size: 1.5em;
+    font-family: Courier, sans-serif;
+    padding: 1em 5em;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 0.5em;
+    border-bottom: 0.25em solid #0f5177;
+    -moz-transition: 0.1s;
+    -webkit-transition: 0.1s;
+    transition: 0.1s;
+    box-shadow: 0 2px 3px #ccc;
+    position: relative;
+}
+.api-button:hover {
+    background-color: #1e9feb;
+    border-bottom-width: 0;
+    margin-top: 0.2em;
+}
+.digits {
+    color: #00FF00;
+    font-family: 'Play', sans-serif;
+}
+.nostyle {
+    list-style: none;
+    list-style-type: none;
+}
+.home-link {
+    float: right;
+    margin-top: 15px;
+}
+.reg-link {
+    float: right;
+    margin-top: 15px;
+}
+.get-key {
+    float: center;
+    margin-top: 20px;
+}
+.delete-link {
+    float: right;
+    color: red;
+}
+.view-link {
+    float: left;
+    color: blue;
+}
+.edit-link {
+    color: green;
+}
+.pass {
+    color: green;
+}
+.thick {
+    font-weight: bold;
+}

@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  div(class="container")
+      h1 AirBnB Listings
+      ul(class="userlist" id="userlist")
+      each listing, i in listings
+        li(class="nostyle")
+          <a href='view/#{listing._id}' class='view-link'> View </a>
+          &nbsp;
+          <a href='edit/#{listing._id}' class='edit-link'>  Edit </a>
+          &nbsp;
+          span  #{listing.name} &nbsp;
+          if (listing.city)
+            span #{listing.city}, #{listing.state} &nbsp;
+          if (listing.noGuests)
+            span / Up to #{listing.noGuests} guests allowed &nbsp;
+          if (listing.price)
+            span / $#{listing.price}/night &nbsp;
+          a(href='delete/#{listing._id}' class='delete-link') X
+      a(href='regform' class='reg-link') Add New AirBnb
+
+  div(class="container")
+    h1 Try out the RESTFul API!
+    a(href='api' class='get-key') Click here to test out the airbnb api!
+
+  div(class="container")
+    h1 All tests
+    a(href='test' class='get-key') Click here for complete list of tests and results with no demo.

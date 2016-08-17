@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  div(class="container")
+      ul(class="userlist")
+      each listing, i in listings
+        li
+          h1 #{listing.name}
+          form(method='post', action='/editlisting/update?_method=PUT' class='regform')
+            label Name:
+            input(type='text', name='name', value='#{listing.name}')
+            br
+            label Number of Guests:
+            input(type='text', name='noGuests', value='#{listing.noGuests}')
+            input(type='hidden', name='id', value='#{listing._id}')
+            label Price:
+            input(type='text', name='price', value='#{listing.price}')
+            label State:
+            input(type='text', name='state', value='#{listing.location.state}')
+            label City:
+            input(type='text', name='city', value='#{listing.location.city}')
+
+            input(type='submit', value='Update')
+            a(href='/') Home

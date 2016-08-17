@@ -1,0 +1,76 @@
+extends layout
+
+block content
+  div(class="container")
+      div(style="text-align:center;")
+        a(class='button', href='getkey' class="api-button") Generate API Key
+      if (!yourKey)
+        h1 The button above generates an API key and saves it to the database.
+        h2 Once you have generated it, a demo with pre-loaded cURL commands will appear below.
+      if (yourKey)
+        h3 Your API key is...
+         br
+         br
+         span #{yourKey}
+        p Along with being able to read data, this randomly generated token (which is called "appid" in the api) will enable you to also write, delete, and update to this app's database!
+        if (yourKey)
+          h4 First, delete the "Cozy Cottage" listing, (just in case it's there from an old demo) with /deleteListing:
+          div(class="element-demo")
+            p(class="digits") curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=Cozy+Cottage' "http://52.38.127.124:3008/deleteListing"
+          h4 Create new listing, "Cozy Cottage" with /postListing:
+          div(class="element-demo")
+            p(class="digits") curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=Cozy+Cottage&city=Eugene&state=OR&noGuests=2&price=40' "http://52.38.127.124:3008/postListing"
+          p The only required params of /addlisting are your token (appid) and a unique listing name.
+          h4 Add a couple comments to it with /postComment:
+          div(class="element-demo")
+            p(class="digits") curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&listing_name=Cozy+Cottage&words=I+had+a+nice+stay' "http://52.38.127.124:3008/postComment"
+          div(class="element-demo")
+            p(class="digits") curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&listing_name=Cozy+Cottage&words=Smaller+than+expected' "http://52.38.127.124:3008/postComment"
+          h4 View all the of listings in the state of Oregon:
+          div(class="element-demo")
+            p(class="digits") curl -X GET -H "Content-Type: text/plain" "http://52.38.127.124:3008/getListingsByLocation/?state=OR"
+          p You should get back a JSON of all listings in OR, and Cozy Cottage should show the comments "I had a nice stay" and "smaller than expected". Make a note of the comments' _id fields to check that they were both deleted with the listing later.
+          p Note: This route will also work if you only send in city params or only send in a state params. You could use "city=Eugene&State=OR" to only get the listings in Eugene, OR, or just use "city=Eugene" to get listings in the "Eugene" of any state.
+          h4 Update the listing's city, price, and number of guests allowed with a POST request to the route /put:
+          div(class="element-demo")
+            p(class="digits") curl -X PUT -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=Cozy+Cottage&city=Newport&state=OR&noGuests=5&price=160' "http://52.38.127.124:3008/putListing"
+          p The node implementation of this route is shown further down the page.
+          p At this point you can check that the update was successful by either looking on the homepage or re-submitting the get request to view the listings in OR.
+          p Note: If you would like to update the name, please add the param
+          code id=<_id_of_Listing_to_Update>
+          br
+          Filler and the name of the listing with that _id will be updated to whatever you put in the "name" field.
+          br
+          h4 Remove the listing:
+          div(class="element-demo")
+            p(class="digits") curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=Cozy+Cottage' "http://52.38.127.124:3008/deleteListing"
+          h4 Check that the listing is no longer in the database with /getAllListings: (or use the getListingsByLocation command above to only check Oregon)
+          div(class="element-demo")
+            p(class="digits") curl -X GET -H "Content-Type: text/plain"  "http://52.38.127.124:3008/getAllListings"
+          h4 Check that the comment was deleted with /getAllComments:
+          div(class="element-demo")
+            p(class="digits") curl -X GET -H "Content-Type: text/plain" "http://52.38.127.124:3008/getAllComments"
+      p You can also these URIs in your own applications.
+      h4 Update a listing with javascript on a machine that has node.js installed:
+      p Create a javascript file in any empty directory, open the command line, and from
+       within the directory of your new javascript file, enter this into the command line:
+        br
+        code npm install request
+        br
+      p Then paste this into the javascript file and save:
+      iframe(type='text/html' width='470' height='390'
+          src='//jsfiddle.net/LLbk4wop/embedded/' allowfullscreen='allowfullscreen'
+          frameborder='0')
+      p Then run it with
+       br
+       code node nameOfJavascriptFile.js
+       br
+       and you will have successfully updated a listing.
+      p Here are some other routes:
+      h4 Delete a comment without deleting the listing with /deleteComment:
+      div(class="element-demo")
+        p(class="digits") curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=GENERATED_API_KEY&id=ID_OF_COMMENT_TO_DELETE' "http://52.38.127.124:3008/deleteComment"
+      h4 Using the /deleteListing route by listing id instead of name:
+      div(class="element-demo")
+        p(class="digits") curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=GENERATED_API_KEY&id=THE_LISTING_ID' "http://52.38.127.124:3008/deleteListing"
+      a(href='/') Home

@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    div(class='container')
+        form(method='post', action='register' class='regform')
+            h1 Add a New AirBnB Listing to Our System
+            label Title:
+            input(type='text', name='name', placeholder='Enter Listing Name')
+            br
+            label # Guests:
+            input(type='text', name='noGuests', placeholder='Enter number of guests allowed')
+            br
+            label Price:
+            input(type='text', name='price', placeholder='Enter price per night')
+            br
+            label City:
+            input(type='text', name='city', placeholder='City')
+            label State:
+            input(type='text', name='state', placeholder='State')
+
+            input(type='submit', value='Register')
+            a(href='/' class='home-link') Go Home

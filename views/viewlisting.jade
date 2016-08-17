@@ -1,0 +1,41 @@
+extends layout
+
+block content
+  div(class="container")
+      ul(class="userlist")
+      each listing, i in listings
+        li(class="nostyle")
+          h3 #{listing.name}
+          if(listing.location.city && listing.location.state)
+            p #{listing.location.city}, #{listing.location.state}
+          if(listing.noGuests)
+            p Up to #{listing.noGuests} guests allowed
+          if(listing.price)
+            p $#{listing.price}/night
+       a(href='/') Home
+
+   .detailBox
+        .titleBox
+          label Comments
+          each listing, i in listings
+            button.close(type='button', aria-hidden='true') #{listing.name}
+        .commentBox
+          p.taskDescription Directions on how to delete regrettable comments can be found on the /api page of this app.
+        .actionBox
+          each listing, i in listings
+            ul.commentList
+              if(listing.comments)
+                each comment, i in listing.comments
+                  li
+                    .commenterImage
+                      img(src='https://pbs.twimg.com/profile_images/715267564658528256/34kt8EuP.jpg')
+                    .commentText
+                      p #{comment.words}
+                      span.date.sub-text by Anonymous
+                form.form-inline(role='form' method='post' action='addCommentWithoutKey')
+                  .form-group
+                    input.form-control(type='text', name='words' placeholder='Your comments')
+                    input.form-control(type='hidden', name='listing_name' value='#{listing.name}')
+                    input.form-control(type='hidden', name='listing_id' value='#{listing._id}')
+                  .form-group
+                    button.btn.btn-default(type="submit") Add

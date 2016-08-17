@@ -1,0 +1,214 @@
+extends layout
+
+block content
+  div(class="big-container")
+    div(style="text-align:center;")
+
+      if (!yourKey)
+        p Testing requires an API key (press button):
+      a(class='button', href='startTest' class="api-button") Generate API Key
+
+      if (yourKey)
+        br
+        br
+        p(class="thick") Key generated: appid = #{yourKey}
+
+        p(class="thick") /deleteListings tests:
+        p 1) Test /deleteListing on non-valid API key.
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=FAKEAPIKEY&name=TEST+LISTING' "http://52.38.127.124:3008/deleteListing"
+        p Expected result: "INVALID API KEY"
+        p(class='pass') Pass
+        br
+
+        p 2) Test /deleteListing on non-existant listing with valid api key:
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=NON+EXISTANT+LISTING' "http://52.38.127.124:3008/deleteListing"
+        p Expected result: "Failure: Listing with the name NON EXISTANT LISTING was not found in database."
+        p(class='pass') Pass
+        br
+
+        p 3) Test /deleteListing on valid listing:
+        p call 3-a:
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING' "http://52.38.127.124:3008/postListing"
+        p call 3-b:
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING' "http://52.38.127.124:3008/deleteListing"
+        p Expected result: call 3-b will return "Success: Listing TEST LISTING removed from database."
+        p(class='pass') Pass
+        br
+
+
+        p 4) Test /deleteListing for ability to delete comments along with listing:
+        p call 4-a:
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING' "http://52.38.127.124:3008/postListing"
+
+        p call 4-b:
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=n6N0z2SzoQ&listing_name=TEST+LISTING&words=TEST+COMMENT+1' "http://52.38.127.124:3008/postComment"
+
+        p call 4-c:
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=n6N0z2SzoQ&listing_name=TEST+LISTING&words=TEST+COMMENT+2' "http://52.38.127.124:3008/postComment"
+
+        p call 4-d:
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING' "http://52.38.127.124:3008/deleteListing"
+
+        p call 4-e:
+        code curl -X GET -H "Content-Type: text/plain" "http://52.38.127.124:3008/getAllComments"
+
+        p Expected result: Call 4-e will not show "TEST COMMENT 1" or "TEST COMMENT 2" in comments.
+        code p(class='pass') Pass
+        br
+        br
+
+        p(class="thick") /postListing tests:
+        p 5) Test /postListing on non-valid API key.
+        p Expected result: "INVALID API KEY"
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=FAKEAPIKEY&name=TEST+LISTING+1' "http://52.38.127.124:3008/postListing"
+
+        p(class='pass') Pass
+        br
+
+        p 6) Test /postListing with valid APIKey and name, using only name field:
+        p Expected result: "Success: New listing posted."
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+2' "http://52.38.127.124:3008/postListing"
+
+        p(class='pass') Pass
+        br
+
+        p 7) Test /postListing with valid API key and name, but string instead of number for price:
+        p Expected: Error message indicating that cast to number failed for "price".
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+3&price=NOT+A+NUMBER' "http://52.38.127.124:3008/postListing"
+        p(class='pass') Pass
+        br
+
+        p 8) Test /postListing with valid API key and name, but string instead of number for noGuests:
+        p Expected: Error message indicating that cast to number failed for "noGuests".
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+4&noGuests=NOT+A+NUMBER' "http://52.38.127.124:3008/postListing"
+        p(class='pass') Pass
+        br
+
+        p 9) Test /postListing with valid API key, name, city, state, price, and noGuests:
+        p Expected result: "Success: New listing posted."
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+5&city=SALT+LAKE+CITY&state=UT&noGuests=3&price=100' "http://52.38.127.124:3008/postListing"
+        p(class='pass') Pass
+        br
+        br
+
+        p(class="thick") /putListing tests:
+
+        p 10) Test /putListing on non-existant listing:
+        code curl -X PUT -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=NON+EXISTANT+LISTING&city=WallaWalla&state=WA&noGuests=5&price=50' "http://52.38.127.124:3008/putListing"
+        p Expected result: "Failure: Listing with name NON EXISTANT LISTING not found in database."
+        p(class='pass') Pass
+        br
+
+        p 11) Test /putListing on valid listing:
+        code curl -X PUT -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+5&city=WallaWalla&state=WA&noGuests=5&price=50' "http://52.38.127.124:3008/putListing"
+        p Expected result: "Success: Listing with name TEST LISTING 5 updated in database."
+        p(class='pass') Pass
+        br
+
+        p 12) Test /putListing without including name:
+        p Expected result: "Error: Please supply either name= or an ID= in your request."
+        code curl -X PUT -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&city=WallaWalla&state=WA&noGuests=5&price=50' "http://52.38.127.124:3008/putListing"
+        p Expected result: "Error: Please supply either name= or an ID= in your request."
+        p(class='pass') Pass
+        br
+
+        p(class="thick") //getListing tests
+
+        p 13) Test /getAllListings:
+        code curl -X GET -H "Content-Type: text/plain" "http://52.38.127.124:3008/getAllListings"
+        p Expected result: All listings in JSON
+        p(class='pass') Pass
+        br
+
+        p 14) Test /getListingsByLocation with using only city:
+        p call 14-a:
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+6&city=PORTLAND&state=OR' "http://52.38.127.124:3008/postListing"
+
+        p call 14-b:
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+7&city=PORTLAND&state=ME' "http://52.38.127.124:3008/postListing"
+        br
+
+        p call 14-c:
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+8&city=FISHVILLE&state=ME' "http://52.38.127.124:3008/postListing"
+        br
+
+        p call 14-d:
+        code curl -X GET -H "Content-Type: text/plain" "http://52.38.127.124:3008/getListingsByLocation/?city=PORTLAND"
+        br
+
+        p Expected result: 14-d) will return JSON of 'TEST LISTING 6' and 'TEST LISTING 7' but not 'TEST LISTING 8'
+        p(class='pass') Pass
+        br
+
+        p 15)  Test /getListingByLocation using only state:
+        code curl -X GET -H "Content-Type: text/plain" "http://52.38.127.124:3008/getListingsByLocation/?state=ME"
+        p Expected result: JSON of 'TEST LISTING 7' and 'TEST LISTING 8' but not 'TEST LISTING 6'
+
+
+        p 16) Test /getListingByLocation using city and state:
+        code curl -X GET -H "Content-Type: text/plain" "http://52.38.127.124:3008/getListingsByLocation/?city=PORTLAND&state=ME"
+        p Expected result: JSON of 'TEST LISTING 7' but not 'TEST LISTING 6' or 'TEST LISTING 8'
+        p(class='pass') Pass
+        br
+
+        p(class="thick") /Tests for comments
+
+        p 17) Test /postComment on invalid listing:
+        code curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&listing_name=FAKE+LISTING&words=TEST+COMMENT' "http://52.38.127.124:3008/postComment"
+        p Expected result: Bad gateway.
+        p(class='pass') Pass
+        br
+
+        p 18) Test /getAllComments:
+
+        code curl -X GET -H "Content-Type: text/plain" "http://52.38.127.124:3008/getAllComments"
+        p Expected result: All comments appear.
+        p(class='pass') Pass
+        br
+
+
+        p 19) Test /deleteComment on with invalid API key:
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=FAKEAPIKEY&id=COMMENT_ID' "http://52.38.127.124:3008/deleteComment"
+
+        p Expected result: "INVALID API KEY"
+        p(class='pass') Pass
+        br
+
+        p 20) Manual test: test /deleteComment with id of comment:
+
+        p call 20-a:
+        code curl -X GET -H "Content-Type: text/plain" "http://52.38.127.124:3008/getListingsByLocation/?city=PORTLAND&state=ME"
+
+        p Record the id of the comment. (The comment's id will the value right of be under _id, which is right of the listing_name field).
+
+        p call 20-b:
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&id=COMMENT_ID' "http://52.38.127.124:3008/deleteComment"
+
+        p Expected result: 20-b: "Success: Comment with id >your-comment-id> removed from database."
+        p(class='pass') Pass
+        br
+
+        p 21) Test /deleteComment on non-existant comment:
+
+        p Repeat call 20-b from above test
+        p Expected result: "Failure: Comment with id <ID> not found in database."
+        p(class='pass') Pass
+        br
+
+        p Clean up:
+
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+1' "http://52.38.127.124:3008/deleteListing"
+        br
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+2' "http://52.38.127.124:3008/deleteListing"
+        br
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+3' "http://52.38.127.124:3008/deleteListing"
+        br
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+4' "http://52.38.127.124:3008/deleteListing"
+        br
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+5' "http://52.38.127.124:3008/deleteListing"
+        br
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+6' "http://52.38.127.124:3008/deleteListing"
+        br
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+7' "http://52.38.127.124:3008/deleteListing"
+        br
+        code curl -X DELETE -H "Content-Type: application/x-www-form-urlencoded" -d 'appid=#{yourKey}&name=TEST+LISTING+8' "http://52.38.127.124:3008/deleteListing"
